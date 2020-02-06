@@ -1,38 +1,42 @@
 <?php
 
-
+//call id to main inputfield
 $inputField = $_GET['inputfield'];
-
+//replacement pokemon to prevent empty inputfield error
 if (empty($_GET ['inputfield'])) {
+    //main api
     $api = file_get_contents("https://pokeapi.co/api/v2/pokemon/1");
 }
 else {
     $api = file_get_contents("https://pokeapi.co/api/v2/pokemon/" . $inputField);
 }
+//----------------------------------
 $data = json_decode($api, true);
 $pokeId = $data["id"];
+//sprite api
 $sprite = $data["sprites"]["front_default"];
 $movesArray = [];
 
+// loop for randomized moves
 for ($i =0; $i < count($data['moves']); $i++) {
     array_push($movesArray, $data['moves'][$i]['move']['name']);
     $randomMoveindex = array_rand($movesArray,4);
 }
-
+// moves
 $move1 = $movesArray[$randomMoveindex[0]];
     $move2 = $movesArray[$randomMoveindex[1]];
         $move3 = $movesArray[$randomMoveindex[2]];
             $move4 = $movesArray[$randomMoveindex[3]];
 
 
-
+//evolution api
 $apiEvo = file_get_contents("https://pokeapi.co/api/v2/pokemon-species/" . $inputField);
 $dataEvo = json_decode ($apiEvo, true);
+//previous evolution api
 $prevName = $dataEvo['evolves_from_species']['name'];
 $apievoCall = file_get_contents("https://pokeapi.co/api/v2/pokemon/" . $prevName);
 $dataCall = json_decode($apievoCall, true);
 $callSprite = $dataCall["sprites"]["front_default"];
-
 
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------
