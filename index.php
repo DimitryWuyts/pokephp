@@ -1,26 +1,43 @@
 <?php
 
 
-ini_set('display_errors',
-'1'); ini_set('display_startup_errors',
-'1'); error_reporting(E_ALL);
-
+$inputField = $_GET['inputfield'];
 
 if (empty($_GET ['inputfield'])) {
     $api = file_get_contents("https://pokeapi.co/api/v2/pokemon/1");
 }
 else {
-    $api = file_get_contents("https://pokeapi.co/api/v2/pokemon/" . ($_GET['inputfield']));
+    $api = file_get_contents("https://pokeapi.co/api/v2/pokemon/" . $inputField);
 }
 $data = json_decode($api, true);
+$pokeId = $data["id"];
 $sprite = $data["sprites"]["front_default"];
-$apiEvo = file_get_contents("https://pokeapi.co/api/v2/pokemon-species/" . ($_GET['inputfield']));
-$dataEvo = json_decode($apiEvo, true);
-$dataEvofollow = $dataEvo["evolution_chain"]["url"];
-$dataEvofollowapi = file_get_contents($dataEvofollow);
+$movesArray = [];
+
+for ($i =0; $i < count($data['moves']); $i++) {
+    array_push($movesArray, $data['moves'][$i]['move']['name']);
+    $randomMoveindex = array_rand($movesArray,4);
+}
+
+$move1 = $movesArray[$randomMoveindex[0]];
+    $move2 = $movesArray[$randomMoveindex[1]];
+        $move3 = $movesArray[$randomMoveindex[2]];
+            $move4 = $movesArray[$randomMoveindex[3]];
 
 
+
+$apiEvo = file_get_contents("https://pokeapi.co/api/v2/pokemon-species/" . $inputField);
+$dataEvo = json_decode ($apiEvo, true);
+$prevName = $dataEvo['evolves_from_species']['name'];
+$apievoCall = file_get_contents("https://pokeapi.co/api/v2/pokemon/" . $prevName);
+$dataCall = json_decode($apievoCall, true);
+$callSprite = $dataCall["sprites"]["front_default"];
+
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------
 ?>
+<!-- --------------------------------------------------------------------------------------------------------------------------------------------------->
 
 <!doctype html>
 <html lang="en">
@@ -77,7 +94,6 @@ $dataEvofollowapi = file_get_contents($dataEvofollow);
                 <div class="sp"></div>
             </div>
         </div>
-
         <div id="cross">
             <div id="leftcross">
                 <div id="leftT"></div>
@@ -100,23 +116,21 @@ $dataEvofollowapi = file_get_contents($dataEvofollow);
         <div id="stats">
             <?php echo $data['name']?>
             <div id="moves">
-                <div id="pokNr"></div>
+                <div id="pokNr"><?php echo $pokeId ?></div>
                 <div id="pokName"></div>
                 <div id="pokType"></div>
-                <div id="pokDescrip">Pokemon description</div>
-                <div id="move1"></div>
-                <div id="move2"></div>
-                <div id="move3"></div>
-                <div id="move4"></div>
-
+                <div id="pokDescrip"></div>
+                <div id="move1"><?php echo $move1?></div>
+                <div id="move2"><?php echo $move2?></div>
+                <div id="move3"><?php echo $move3?></div>
+                <div id="move4"><?php echo $move4?></div>
             </div>
-
 
         </div>
 
 
         <div id="yellowBox1">
-            <img id="evolPrev" src="<?php echo $dataEvofollow?>">
+            <img id="evolPrev" src="<?php echo $callSprite?>">
         </div>
         <div id="yellowBox2">
             <div id="preName"></div>
