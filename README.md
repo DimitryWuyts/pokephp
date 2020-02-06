@@ -1,5 +1,7 @@
 # Pokephp
 
+## link to pokedex : https://dimitrywuyts.github.io/pokephp/
+
 
 ## Link to exercise :https://github.com/becodeorg/atw-giertz-2-17/tree/master/2.The-Hills/php/1.Pokemon-challenge
 
